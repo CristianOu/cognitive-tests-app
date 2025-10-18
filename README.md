@@ -34,3 +34,158 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## 🧭 How to Link a Local Project with GitHub
+
+Follow these steps to connect your local project to a new GitHub repository and push your code safely.
+
+---
+
+### 🪜 Step 1: Initialize Git Locally
+
+```bash
+git init
+```
+
+This command creates a new local Git repository inside your project folder.
+
+---
+
+### 🪜 Step 2: Add a `.gitignore` File
+
+Make sure to exclude unnecessary or sensitive files (like dependencies or environment variables).
+
+Example for a **Next.js** project:
+
+```
+node_modules/
+.next/
+.env
+.env.local
+dist/
+.DS_Store
+```
+
+---
+
+### 🪜 Step 3: Stage and Commit All Files
+
+```bash
+git add .
+git commit -m "Initial commit"
+```
+
+This stages and commits all files to your local repository.
+
+---
+
+### 🪜 Step 4: Create a Remote Repository on GitHub
+
+1. Go to [https://github.com/new](https://github.com/new)  
+2. Enter your **repository name** (e.g., `cognitive-platform`)  
+3. Set **visibility** to `Public`  
+4. **Do not** initialize with a README, license, or `.gitignore`  
+5. Click **Create Repository**
+
+---
+
+### 🪜 Step 5: Link the Local Repository to GitHub
+
+```bash
+git remote add origin https://github.com/<your-username>/<repo-name>.git
+```
+
+---
+
+### 🪜 Step 6: Pull Remote (If It Already Has Commits)
+
+If the GitHub repo already has an initial commit (e.g., a README), merge histories:
+
+```bash
+git pull origin main --allow-unrelated-histories
+```
+
+---
+
+### 🪜 Step 7: Push Local Code to GitHub
+
+```bash
+git branch -M main
+git push -u origin main
+```
+
+This pushes your local code to the remote GitHub repository and sets the `main` branch as the default tracking branch.
+
+---
+
+### 🪜 Step 8: Verify Remote Connection
+
+```bash
+git remote -v
+```
+
+You should see output similar to:
+
+```
+origin  https://github.com/<your-username>/<repo-name>.git (fetch)
+origin  https://github.com/<your-username>/<repo-name>.git (push)
+```
+
+---
+
+### ✅ Done!
+
+Your local project is now successfully connected to GitHub 🎉  
+Future workflow will look like this:
+
+```bash
+git add .
+git commit -m "Describe your change"
+git push
+```
+
+---
+
+### 🧠 Common Issues and Fixes
+
+| Issue | Fix |
+|-------|-----|
+| `fatal: refusing to merge unrelated histories` | Use `git pull origin main --allow-unrelated-histories` |
+| `There is no tracking information for the current branch` | Run `git branch --set-upstream-to=origin/main main` |
+| Accidentally committed `.env` | Remove with `git rm --cached .env` and add it to `.gitignore` |
+
+---
+
+### 💡 Bonus: Check Commit History and Files
+
+To view what’s been committed:
+
+```bash
+git log
+```
+
+To see which files changed in the latest commit:
+
+```bash
+git show --name-only
+```
+
+---
+
+### 🔍 Quick Summary
+
+| Command | Purpose |
+|----------|----------|
+| `git init` | Initialize local repo |
+| `git add .` | Stage all files |
+| `git commit -m "message"` | Commit changes |
+| `git remote add origin <url>` | Link to GitHub repo |
+| `git pull origin main --allow-unrelated-histories` | Merge if remote isn’t empty |
+| `git push -u origin main` | Push and set tracking |
+| `git status` | Check current state |
+| `git log` | View commit history |
+
+---
+
+> 🧩 **Tip:** Always verify `.env` and build files are listed in `.gitignore` before committing.
+
