@@ -34,6 +34,7 @@ jobs:
         run: |
           echo "Using development Neon database"
           echo "DATABASE_NEON_URL=${{ secrets.DATABASE_NEON_DEVELOPMENT_URL }}" >> .env
+          echo "DATABASE_NEON_URL=${{ secrets.DATABASE_NEON_DEVELOPMENT_URL }}" >> $GITHUB_ENV
 
       - name: Validate Prisma schema
         run: npx prisma validate
