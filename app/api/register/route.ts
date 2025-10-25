@@ -69,7 +69,7 @@ export async function POST(req: Request) {
         data: { email, passwordHash: hashed, name },
       });
   
-    return NextResponse.json({ id: user.id, email: user.email }, { status: 201 });
+    return NextResponse.json({ id: user.id, email: user.email, message: "User created" }, { status: 201 });
   } catch (error: any) {
     console.error('Registration error:', error)
     return NextResponse.json(
