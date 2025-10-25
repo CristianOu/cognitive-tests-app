@@ -28,6 +28,7 @@ jobs:
           node-version: 22
 
       - name: Cache PNPM store
+        if: success()
         uses: actions/cache@v4
         with:
           path: |
@@ -36,7 +37,6 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
-          save-always: true
 
       - name: Install dependencies
         run: pnpm install
