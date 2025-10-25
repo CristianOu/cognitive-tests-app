@@ -9,7 +9,7 @@ it("should return 400 for invalid input", async () => {
   });
   const res = await POST(req);
 
-  expect(res.status).toBe(401);
+  expect(res.status).toBe(400);
   const json = await res.json();
   expect(json).toHaveProperty("error");
 });
@@ -24,7 +24,6 @@ it("should return 400 for invalid input", async () => {
         name: "Test User",
       }),
     });
-
     const res = await POST(req);
 
     expect(res.status).toBe(201);
