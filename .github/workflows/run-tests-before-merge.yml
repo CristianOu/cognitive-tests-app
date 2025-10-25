@@ -1,4 +1,4 @@
-name: Run Tests Before Deploy
+name: Run Tests Before Merge
 
 on:
   push:
