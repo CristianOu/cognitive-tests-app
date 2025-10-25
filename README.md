@@ -189,3 +189,12 @@ git show --name-only
 
 > 🧩 **Tip:** Always verify `.env` and build files are listed in `.gitignore` before committing.
 
+## 🧱 Prisma Schema Updates
+
+Whenever you make changes to your Prisma schema file (`prisma/schema.prisma`),  
+you need to regenerate the Prisma Client so your code reflects the latest database structure.
+
+Run the following command:
+
+```bash
+npx prisma generate

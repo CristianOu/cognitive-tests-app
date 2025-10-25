@@ -1,0 +1,37 @@
+name: Run Tests Before Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - development
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Set up environment variables
+        run: |
+          echo "Using development Neon database"
+          echo "DATABASE_NEON_URL=${{ secrets.DATABASE_NEON_DEVELOPMENT_URL }}" >> .env
+
+      - name: Validate Prisma schema
+        run: npx prisma validate
+      
+      - name: Run Jest tests
+        run: pnpm test
