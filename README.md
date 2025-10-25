@@ -200,3 +200,4 @@ Run the following command:
 
 ```bash
 npx prisma generate
+```
