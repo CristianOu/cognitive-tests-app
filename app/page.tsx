@@ -11,10 +11,10 @@ export default function HomePage() {
 
       <div className="space-x-4">
         <Link
-          href="/cognitive-tests/memory"
+          href="/cognitive-tests/reaction-test"
           className="bg-blue-600 text-white px-4 py-2 rounded-md"
         >
-          Try Memory Test
+          Try Reaction Test
         </Link>
         <Link
           href="/cognitive-tests/attention"
