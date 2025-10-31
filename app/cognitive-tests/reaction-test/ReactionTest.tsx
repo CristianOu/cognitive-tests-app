@@ -93,27 +93,6 @@ export default function ReactionTest() {
       }}
       onClick={() => handleAction()}
     >
-      {/* Header */}
-      <header className="flex items-center justify-between border-b border-[#e7ebf3] px-10 py-3 bg-[#f8f9fc]">
-        <h2 className="text-lg font-bold text-[#0d121b]">CogniTest</h2>
-        <nav className="flex gap-6 text-sm font-medium text-[#0d121b]">
-          <a href="/" className="hover:text-[#135bec]">
-            Home
-          </a>
-          <a href="/cognitive-tests" className="hover:text-[#135bec]">
-            Tests
-          </a>
-          <a href="/about" className="hover:text-[#135bec]">
-            About
-          </a>
-          <a href="/login" className="hover:text-[#135bec]">
-            Login
-          </a>
-        </nav>
-      </header>
-
-      {/* Main */}
-      <main className="flex-1 flex flex-col items-center justify-center text-center p-8">
         <div className="max-w-md w-full bg-white/80 backdrop-blur-sm rounded-xl p-8 shadow-lg border border-[#e7ebf3]">
           <h1 className="text-2xl font-bold text-[#0d121b] mb-4">Visual Reaction Time Test</h1>
           <p className="text-[#4c669a] mb-6">{message}</p>
@@ -144,12 +123,6 @@ export default function ReactionTest() {
             </div>
           )}
         </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="border-t border-[#e7ebf3] text-[#4c669a] py-6 text-center text-sm bg-[#f8f9fc]">
-        © 2024 CogniTest. All rights reserved.
-      </footer>
     </div>
   );
 }
