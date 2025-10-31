@@ -85,7 +85,7 @@ export default function ReactionTest() {
   return (
     <div
       ref={containerRef}
-      className={`flex flex-col min-h-screen ${bgColor} transition-colors`}
+      className={`flex flex-col ${bgColor} transition-colors`}
       style={{ fontFamily: "Inter, 'Noto Sans', sans-serif" }}
       tabIndex={0} // allows capturing keyboard events
       onKeyDown={(e) => {
