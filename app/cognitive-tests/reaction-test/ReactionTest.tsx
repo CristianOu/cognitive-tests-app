@@ -11,7 +11,7 @@ enum TestPhase {
 
 export default function ReactionTest() {
   const [phase, setPhase] = useState<TestPhase>(TestPhase.INTRO);
-  const [message, setMessage] = useState("Press Start to begin the test.");
+  const [message, setMessage] = useState("Press Start to begin the test.\nLeft click or press Space when it turns green.");
   const [bgColor, setBgColor] = useState("bg-[#f8f9fc]");
   const [startTime, setStartTime] = useState<number | null>(null);
   const [reactionTime, setReactionTime] = useState<number | null>(null);
@@ -74,7 +74,7 @@ export default function ReactionTest() {
   const resetTest = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setPhase(TestPhase.INTRO);
-    setMessage("Press Start to begin the test.");
+    setMessage("Press Start to begin the test.\nClick or press Space when it turns green.");
     setBgColor("bg-[#f8f9fc]");
     setReactionTime(null);
   };
@@ -85,7 +85,7 @@ export default function ReactionTest() {
   return (
     <div
       ref={containerRef}
-      className={`flex flex-col ${bgColor} transition-colors`}
+      className={`flex flex-col items-center justify-center min-h-[50vh] ${bgColor} transition-colors ${phase === TestPhase.WAITING ? "cursor-pointer" : ""}`}
       style={{ fontFamily: "Inter, 'Noto Sans', sans-serif" }}
       tabIndex={0} // allows capturing keyboard events
       onKeyDown={(e) => {
@@ -100,7 +100,7 @@ export default function ReactionTest() {
           {phase === TestPhase.INTRO && (
             <button
               onClick={startTest}
-              className="px-6 py-3 bg-[#135bec] hover:bg-[#0f47b6] text-white font-bold rounded-lg transition"
+              className="px-6 py-3 bg-[#135bec] hover:bg-[#0f47b6] text-white font-bold rounded-lg transition cursor-pointer"
             >
               Start Test
             </button>
@@ -109,7 +109,7 @@ export default function ReactionTest() {
           {phase === TestPhase.RESULT && (
             <button
               onClick={resetTest}
-              className="px-6 py-3 bg-[#135bec] hover:bg-[#0f47b6] text-white font-bold rounded-lg transition"
+              className="px-6 py-3 bg-[#135bec] hover:bg-[#0f47b6] text-white font-bold rounded-lg transition cursor-pointer"
             >
               Try Again
             </button>
