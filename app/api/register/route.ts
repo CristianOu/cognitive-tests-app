@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/prisma/prisma';
 import bcrypt from 'bcrypt';
 import { z } from "zod";
 
-const prisma = new PrismaClient();
 
 const RegisterSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -69,7 +68,7 @@ export async function POST(req: Request) {
         data: { email, passwordHash: hashed, name },
       });
   
-    return NextResponse.json({ id: user.id, email: user.email, message: "User created" }, { status: 201 });
+    return NextResponse.json({ id: user.id, email: user.email, name: user.name, message: "User created" }, { status: 201 });
   } catch (error: any) {
     console.error('Registration error:', error)
     return NextResponse.json(
