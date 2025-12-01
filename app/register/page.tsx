@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function RegisterPage() {
   const [isMounted, setIsMounted] = useState(false);
@@ -25,7 +26,35 @@ export default function RegisterPage() {
   });
 
   const onSubmit = async (data: FormValues) => {
-    console.log(data.email, data.password, data.name);
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.error) {
+        console.error(result.error);
+        toast.error(result.error);
+      } else {
+        // Save token and redirect on successful registration
+        // login(result.token);
+        toast.success('Registration successful!');
+        // router.push('/dashboard');
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred during registration';
+      toast.error(errorMessage);
+      console.error('Registration error:', error);
+    }
   };
 
   useEffect(() => {
@@ -68,6 +97,7 @@ export default function RegisterPage() {
           Register
         </button>
       </form>
+      <ToastContainer />
     </div>
   );
 }
