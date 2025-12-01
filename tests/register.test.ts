@@ -3,7 +3,10 @@ import { POST } from "@/app/api/register/route";
 
 describe("POST /api/register", () => {
 it("should return 400 for invalid input", async () => {
-  const req = new Request("https://cognitive-tests-app.vercel.app/api/register", {
+  const url = `${process.env.NODE_ENV === 'test' ? 'http://localhost:3000' : 'https://cognitive-tests-app.vercel.app'}/api/register`;
+  console.log("✅ NODE_ENV:", process.env.NODE_ENV);
+  
+  const req = new Request(url, {
     method: "POST",
     body: JSON.stringify({}),
   });
@@ -16,7 +19,9 @@ it("should return 400 for invalid input", async () => {
 
   it("should return 201 for valid input", async () => {
     const id = crypto.randomUUID();
-    const req = new Request("https://cognitive-tests-app.vercel.app/api/register", {
+    const url = `${process.env.NODE_ENV === 'test' ? 'http://localhost:3000' : 'https://cognitive-tests-app.vercel.app'}/api/register`;
+    console.log(url);
+    const req = new Request(url, {
       method: "POST",
       body: JSON.stringify({
         email: `${id}@example.com`,
