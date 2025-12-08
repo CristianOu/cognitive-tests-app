@@ -44,8 +44,14 @@ jobs:
       - name: Set up environment variables
         run: |
           echo "Using development Neon database"
+
+          # Write both variables into .env. Necessary if dotenv is used.
           echo "DATABASE_NEON_URL=${{ secrets.DATABASE_NEON_DEVELOPMENT_URL }}" >> .env
+          echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> .env
+
+          # Write variables into GITHUB_ENV
           echo "DATABASE_NEON_URL=${{ secrets.DATABASE_NEON_DEVELOPMENT_URL }}" >> $GITHUB_ENV
+          echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> $GITHUB_ENV
 
       - name: Validate Prisma schema
         run: npx prisma validate
