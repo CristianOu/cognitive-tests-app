@@ -50,6 +50,10 @@ jobs:
           # Write variables into GITHUB_ENV
           echo "DATABASE_NEON_URL=${{ secrets.DATABASE_NEON_DEVELOPMENT_URL }}" >> $GITHUB_ENV
           echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> $GITHUB_ENV
+      - name: Debug environment
+        run: |
+          echo "DATABASE_NEON_URL='${DATABASE_NEON_URL}'"
+          echo "Length: ${#DATABASE_NEON_URL}"
 
       - name: Validate Prisma schema
         run: npx prisma validate
