@@ -202,4 +202,10 @@ Run the following command:
 npx prisma generate
 ```
 
+## Test Environment Setup
 
+Running the test suite requires a local `.env` file containing the following variables:
+
+```env
+DATABASE_NEON_URL=your_neon_connection_string
+NODE_ENV=test
