@@ -4,8 +4,6 @@ import { POST } from "@/app/api/register/route";
 describe("POST /api/register", () => {
 it("should return 400 for invalid input", async () => {
   const url = `${process.env.NODE_ENV === 'test' ? 'http://localhost:3000' : 'https://cognitive-tests-app.vercel.app'}/api/register`;
-  console.log("✅ NODE_ENV:", process.env.NODE_ENV);
-  
   const req = new Request(url, {
     method: "POST",
     body: JSON.stringify({}),
