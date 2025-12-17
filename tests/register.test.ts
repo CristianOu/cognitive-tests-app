@@ -33,6 +33,6 @@ it("should return 400 for invalid input", async () => {
 
     expect(res.status).toBe(201);
     const json = await res.json();
-    expect(json).toHaveProperty("message", "User created");
+    expect(json).toHaveProperty("success", true);
   });
 });
