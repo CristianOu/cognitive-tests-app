@@ -1,4 +1,5 @@
 export default function DashboardPage() {
+
   return (
     <section>
       <h2 className="text-2xl font-bold mb-4">Your Statistics</h2>

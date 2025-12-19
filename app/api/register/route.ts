@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { z } from "zod";
-import { PrismaClient } from '@prisma/client';
+import { prisma } from "@/app/lib/prisma";
 import jwt from 'jsonwebtoken';
-
-const prisma = new PrismaClient();
 
 const RegisterSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -14,6 +12,10 @@ const RegisterSchema = z.object({
 
 export async function POST(req: Request) {
   try {
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET is not defined'); // fail fast
+    }
+
     let body: { email: string; password: string; name?: string };
 
     // Parse body safely
@@ -70,20 +72,16 @@ export async function POST(req: Request) {
       data: { email, passwordHash: hashed, name }, // role: 'USER' is optional
     });
 
-    if (!process.env.JWT_SECRET) {
-      throw new Error('JWT_SECRET is not defined');
-    }
-
     const token = jwt.sign(
       { id: user.id },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "7d" }
     );
 
-    const response = NextResponse.json({ email: user.email, token, success: true }, { status: 201 }); // email and token can be removed in production version
+    const response = NextResponse.json({ email: user.email, success: true }, { status: 201 }); // email can be removed in production version
     
     response.cookies.set('auth_token', token, {
-    httpOnly: false, // JS cannot read the token → XSS protection
+    httpOnly: true, // JS cannot read the token → XSS protection
     secure: false, // process.env.NODE_ENV === 'production', to set it to true we need https
     sameSite: 'lax', // prevents CSRF in most cases
     path: '/',

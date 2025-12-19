@@ -3,9 +3,13 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { getCookie } from 'cookies-next/client';
+import { ToastContainer, toast } from "react-toastify";
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-  const [isMounted, setIsMounted] = useState(false);
+  const [isMounted, setIsMounted] = useState(false); // Used to fix hydration error
+  const router = useRouter();
 
   const schema = z.object({
     email: z.string().email("Invalid email address"),
@@ -24,42 +28,78 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: FormValues) => {
-    console.log(data.email, data.password);
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+        credentials: 'include', // Not critical here, but good for consistency
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        // Handle error response
+        toast.error(result.error || 'Login failed. Please check your credentials.');
+        return;
+      }
+
+      // Success - redirect to dashboard
+      router.push('/dashboard');
+      router.refresh(); // Refresh to update server components (Header)
+      
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error('An unexpected error occurred. Please try again.');
+    }
   };
 
   useEffect(() => {
     setIsMounted(true);
+    const redirectTarget = getCookie("auth_redirect");
+    if (redirectTarget) {
+      toast.info(`You need to have an account to access ${redirectTarget}`);
+    }
   }, []);
 
-  if (!isMounted) return null;
-
   return (
-    <div className="max-w-md mx-auto mt-12 bg-white p-6 rounded-md shadow">
-      <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <input
-          type="email"
-          placeholder="Email"
-          {...register("email")}
-          className="w-full border p-2 rounded"
-          autoComplete="username"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          {...register("password")}
-          className="w-full border p-2 rounded"
-          autoComplete="current-password"
-          required
-        />
-        {errors.password || errors.email ? (
-          <p className="text-red-500 text-sm">{errors.password?.message || errors.email?.message}</p>
-        ) : null}
-        <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded" disabled={isSubmitting}>
-          Log In
-        </button>
-      </form>
-    </div>
+    <>
+      <ToastContainer />
+      { isMounted && (
+          <div className="max-w-md mx-auto mt-12 bg-white p-6 rounded-md shadow">
+            <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <input
+                type="email"
+                placeholder="Email"
+                {...register("email")}
+                className="w-full border p-2 rounded"
+                autoComplete="username"
+                required
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                {...register("password")}
+                className="w-full border p-2 rounded"
+                autoComplete="current-password"
+                required
+              />
+              {errors.password || errors.email ? (
+                <p className="text-red-500 text-sm">{errors.password?.message || errors.email?.message}</p>
+              ) : null}
+              <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded cursor-pointer" disabled={isSubmitting}>
+                Log In
+              </button>
+            </form>
+          </div>
+        )
+      }
+    </>
   );
 }

@@ -1,6 +1,12 @@
 import Link from "next/link";
+import { cookies } from "next/headers"; // Server-side only - cannot be used in client components
+import SignOutButton from "./SignOutButton";
 
-export default function Header() {
+export default async function Header() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("auth_token")?.value;
+  const isAuthenticated = Boolean(token);
+
   return (
     <header className="bg-white border-b border-gray-200 shadow-sm">
       <nav className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
@@ -25,18 +31,32 @@ export default function Header() {
 
         {/* Auth Buttons */}
         <div className="flex items-center gap-3">
-          <Link
-            href="/register"
-            className="bg-blue-600 text-white px-5 py-2 rounded-md font-medium hover:bg-blue-700 transition-colors"
-          >
-            Sign Up
-          </Link>
-          <Link
-            href="/login"
-            className="bg-white text-gray-900 px-5 py-2 rounded-md font-medium border border-gray-300 hover:bg-gray-50 transition-colors"
-          >
-            Log In
-          </Link>
+          {isAuthenticated ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="bg-gray-900 text-white px-5 py-2 rounded-md font-medium hover:bg-gray-800"
+              >
+                Dashboard
+              </Link>
+              <SignOutButton />
+            </>
+          ) : (
+            <>
+              <Link
+                href="/register"
+                className="bg-blue-600 text-white px-5 py-2 rounded-md font-medium hover:bg-blue-700"
+              >
+                Sign Up
+              </Link>
+              <Link
+                href="/login"
+                className="bg-white text-gray-900 px-5 py-2 rounded-md font-medium border border-gray-300 hover:bg-gray-50"
+              >
+                Log In
+              </Link>
+            </>
+          )}
         </div>
       </nav>
     </header>
