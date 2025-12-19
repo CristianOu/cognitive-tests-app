@@ -12,6 +12,10 @@ const RegisterSchema = z.object({
 
 export async function POST(req: Request) {
   try {
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET is not defined'); // fail fast
+    }
+
     let body: { email: string; password: string; name?: string };
 
     // Parse body safely
@@ -67,10 +71,6 @@ export async function POST(req: Request) {
     const user = await prisma.user.create({
       data: { email, passwordHash: hashed, name }, // role: 'USER' is optional
     });
-
-    if (!process.env.JWT_SECRET) {
-      throw new Error('JWT_SECRET is not defined');
-    }
 
     const token = jwt.sign(
       { id: user.id },
