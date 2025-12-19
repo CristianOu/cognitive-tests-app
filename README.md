@@ -202,10 +202,34 @@ Run the following command:
 npx prisma generate
 ```
 
-## Test Environment Setup
+## Environment Variables
 
-Running the test suite requires a local `.env` file containing the following variables:
+When a new environment variable is introduced, it must be added in **all relevant places** to keep local development, deployments, and automation consistent.
 
-```env
-DATABASE_NEON_URL=your_neon_connection_string
-NODE_ENV=test
+### Required locations
+
+1. **Local development**
+   - Add the variable to the local `.env` file.
+   - Example:
+     ```env
+     MY_NEW_VAR=value
+     ```
+
+2. **Vercel**
+   - Add the same variable in **Vercel → Project Settings → Environment Variables**.
+   - Ensure it is defined for the correct environments (Development, Preview, Production).
+
+3. **GitHub Actions (if applicable)**
+   - If the variable is used in any GitHub Action workflow:
+     - Add it to **GitHub → Repository → Settings → Secrets and variables**.
+     - Use **Secrets** for sensitive values (tokens, keys).
+     - Use **Variables** for non-sensitive configuration.
+
+### Notes
+
+- Variable names must match **exactly** across all platforms.
+- Missing variables may cause build failures, runtime errors, or broken CI pipelines.
+- After updating environment variables, redeploy the project if required.
+
+
+
