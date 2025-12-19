@@ -39,6 +39,7 @@ export default function RegisterPage() {
           email: data.email,
           password: data.password,
         }),
+        credentials: 'include',
       });
 
       const result = await response.json();
@@ -47,8 +48,8 @@ export default function RegisterPage() {
         console.error(result.error);
         toast.error(result.error);
       } else {
-        toast.success('Registration successful!');
         router.push('/dashboard');
+        router.refresh();
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An error occurred during registration';
@@ -66,6 +67,8 @@ export default function RegisterPage() {
   return (
     <div className="max-w-md mx-auto mt-12 bg-white p-6 rounded-md shadow">
       <h2 className="text-2xl font-semibold mb-4 text-center">Register</h2>
+      <div>Use a testing email. No further validation is required for this application.</div>
+      <br />
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <input
           type="email"
@@ -93,7 +96,7 @@ export default function RegisterPage() {
           autoComplete="name"
         />
         {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
-        <button type="submit" className="w-full bg-green-600 text-white p-2 rounded" disabled={isSubmitting}>
+        <button type="submit" className="w-full bg-green-600 text-white p-2 rounded cursor-pointer" disabled={isSubmitting}>
           Register
         </button>
       </form>
