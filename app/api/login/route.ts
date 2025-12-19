@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from '@prisma/client';
+import { prisma } from "@/app/lib/prisma";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 
-const prisma = new PrismaClient();
-const SECRET = process.env.JWT_SECRET || "devsecret";
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET is not defined"); // fail fast
+}
+const SECRET = process.env.JWT_SECRET;
 
 // Define input validation schema
 const LoginSchema = z.object({
@@ -60,18 +62,27 @@ export async function POST(req: Request) {
     const token = jwt.sign(
       { id: user.id, role: user.role, email: user.email },
       SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "7d" }
     );
 
-    // Return success
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
-        message: "Login successful",
-        token,
-        user: { id: user.id, email: user.email, role: user.role },
+        success: true,
+        email: user.email, // email can be removed in the future
       },
       { status: 200 }
     );
+
+    // Return success
+    response.cookies.set('auth_token', token, {
+      httpOnly: true, // JS cannot read the token → XSS protection
+      secure: false, // process.env.NODE_ENV === 'production', to set it to true we need https
+      sameSite: 'lax', // prevents CSRF in most cases
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+
+    return response;
   } catch (error: any) {
     console.error("Login error:", error);
 
