@@ -4,8 +4,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ToastContainer, toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
 
   const schema = z.object({
@@ -45,10 +47,8 @@ export default function RegisterPage() {
         console.error(result.error);
         toast.error(result.error);
       } else {
-        // Save token and redirect on successful registration
-        // login(result.token);
         toast.success('Registration successful!');
-        // router.push('/dashboard');
+        router.push('/dashboard');
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An error occurred during registration';
