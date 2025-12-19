@@ -17,7 +17,7 @@ function handleDashboardAuth(req: NextRequest) {
   }
   const token = req.cookies.get('auth_token')?.value;
   if (!token) {
-    console.log('❌ token is undefined', req.url);
+    console.log('⚠️ User not authorized to access this path:', req.url);
     const res = NextResponse.redirect(new URL("/login", req.url));
     res.cookies.set("auth_redirect", "Dashboard", {
     maxAge: 10,
