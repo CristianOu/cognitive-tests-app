@@ -1,17 +1,12 @@
-import Link from "next/link";
-import { cookies } from "next/headers"; // Server-side only - cannot be used in client components
-import SignOutButton from "./SignOutButton";
-import { decodeJwt } from 'jose';
+"use client";
 
-export default async function Header() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("auth_token")?.value;
-  let userName: string | null = null;
-  if (token) {
-    const payload = decodeJwt(token);
-    userName = payload.name as string || null;
-  }
-  const isAuthenticated = Boolean(token);
+import Link from "next/link";
+import SignOutButton from "./SignOutButton";
+import { useAuth } from "../contexts/AuthContext";
+
+export default function Header() {
+  const { isAuthenticated, user } = useAuth();
+  
 
   return (
     <header className="bg-white border-b border-gray-200 shadow-sm">
@@ -39,9 +34,9 @@ export default async function Header() {
         <div className="flex items-center gap-3">
           {isAuthenticated ? (
             <>
-              {userName && (
+              {user && user.name && (
                 <span className="text-gray-700 font-medium">
-                  {userName}
+                  {user.name}
                 </span>
               )}
               <Link

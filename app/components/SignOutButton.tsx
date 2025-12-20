@@ -4,33 +4,26 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function SignOutButton() {
   const router = useRouter();
+  const { logout } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleSignOut = async () => {
-    try {
-      setIsLoggingOut(true);
-      
-      // Call the logout endpoint to delete the cookie server-side
-      const response = await fetch('/api/logout', { 
-        method: 'POST',
-      });
-      
-      if (!response.ok) {
-        toast.error('Logout failed');
-        throw new Error('Logout failed');
-      }
-      
-      // Redirect to home page
-      router.push('/');
-      router.refresh(); // Refresh to update server components
-    } catch (error) {
-      console.error('Logout failed:', error);
-      toast.error('Logout failed');
+    setIsLoggingOut(true);
+
+    const result = await logout();
+
+    if (!result.success) {
+      toast.error(result.error || 'Logout failed');
       setIsLoggingOut(false);
+      return;
     }
+
+    // Redirect to home page
+    router.push('/');
   };
 
   return (

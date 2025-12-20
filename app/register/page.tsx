@@ -5,9 +5,11 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import { useAuth } from "../contexts/AuthContext";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { register: registerUser } = useAuth();
   const [isMounted, setIsMounted] = useState(false);
 
   const schema = z.object({
@@ -28,34 +30,15 @@ export default function RegisterPage() {
   });
 
   const onSubmit = async (data: FormValues) => {
-    try {
-      const response = await fetch('/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: data.name,
-          email: data.email,
-          password: data.password,
-        }),
-        credentials: 'include',
-      });
+    const result = await registerUser(data.email, data.password, data.name);
 
-      const result = await response.json();
-
-      if (result.error) {
-        console.error(result.error);
-        toast.error(result.error);
-      } else {
-        router.push('/dashboard');
-        router.refresh();
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'An error occurred during registration';
-      toast.error(errorMessage);
-      console.error('Registration error:', error);
+    if (!result.success) {
+      toast.error(result.error || 'Registration failed. Please try again.');
+      return;
     }
+
+    // Success - redirect to dashboard
+    router.push('/dashboard');
   };
 
   useEffect(() => {
