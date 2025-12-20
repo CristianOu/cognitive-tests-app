@@ -1,10 +1,16 @@
 import Link from "next/link";
 import { cookies } from "next/headers"; // Server-side only - cannot be used in client components
 import SignOutButton from "./SignOutButton";
+import { decodeJwt } from 'jose';
 
 export default async function Header() {
   const cookieStore = await cookies();
   const token = cookieStore.get("auth_token")?.value;
+  let userName: string | null = null;
+  if (token) {
+    const payload = decodeJwt(token);
+    userName = payload.name as string || null;
+  }
   const isAuthenticated = Boolean(token);
 
   return (
@@ -33,6 +39,11 @@ export default async function Header() {
         <div className="flex items-center gap-3">
           {isAuthenticated ? (
             <>
+              {userName && (
+                <span className="text-gray-700 font-medium">
+                  {userName}
+                </span>
+              )}
               <Link
                 href="/dashboard"
                 className="bg-gray-900 text-white px-5 py-2 rounded-md font-medium hover:bg-gray-800"
