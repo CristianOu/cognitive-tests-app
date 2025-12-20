@@ -17,7 +17,6 @@ export default function ReactionTest() {
   const [message, setMessage] = useState("Press Start to begin the test.\nLeft click or press Space when it turns green.");
   const [bgColor, setBgColor] = useState("bg-[#f8f9fc]");
   const [startTime, setStartTime] = useState<number | null>(null);
-  const [reactionTime, setReactionTime] = useState<number | null>(null);
   const [attempts, setAttempts] = useState<number[]>([]);
   const [mistake, setMistake] = useState(false);
   const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
@@ -74,7 +73,6 @@ export default function ReactionTest() {
       setBgColor("bg-red-300");
     } else if (phase === TestPhase.READY && startTime) {
       const time = Date.now() - startTime;
-      setReactionTime(time);
       setAttempts((prev) => [...prev, time]);
       setPhase(TestPhase.RESULT);
       setMessage(`Your reaction time: ${time} ms`);
@@ -108,7 +106,6 @@ export default function ReactionTest() {
     setPhase(TestPhase.INTRO);
     setMessage("Press Start to begin the test.\nClick or press Space when it turns green.");
     setBgColor("bg-[#f8f9fc]");
-    setReactionTime(null);
   };
 
   const average =
