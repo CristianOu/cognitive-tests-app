@@ -20,7 +20,7 @@ function handleDashboardAuth(req: NextRequest) {
     console.log('⚠️ User not authorized to access this path:', req.url);
     const res = NextResponse.redirect(new URL("/login", req.url));
     res.cookies.set("auth_redirect", "Dashboard", {
-    maxAge: 10,
+    maxAge: 1,
     sameSite: "lax",
     path: "/",
   });
