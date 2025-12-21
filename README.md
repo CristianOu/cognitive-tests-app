@@ -83,10 +83,10 @@ This stages and commits all files to your local repository.
 
 ### 🪜 Step 4: Create a Remote Repository on GitHub
 
-1. Go to [https://github.com/new](https://github.com/new)  
-2. Enter your **repository name** (e.g., `cognitive-platform`)  
-3. Set **visibility** to `Public`  
-4. **Do not** initialize with a README, license, or `.gitignore`  
+1. Go to [https://github.com/new](https://github.com/new)
+2. Enter your **repository name** (e.g., `cognitive-platform`)
+3. Set **visibility** to `Public`
+4. **Do not** initialize with a README, license, or `.gitignore`
 5. Click **Create Repository**
 
 ---
@@ -137,7 +137,7 @@ origin  https://github.com/<your-username>/<repo-name>.git (push)
 
 ### ✅ Done!
 
-Your local project is now successfully connected to GitHub 🎉  
+Your local project is now successfully connected to GitHub 🎉
 Future workflow will look like this:
 
 ```bash
@@ -150,11 +150,11 @@ git push
 
 ### 🧠 Common Issues and Fixes
 
-| Issue | Fix |
-|-------|-----|
-| `fatal: refusing to merge unrelated histories` | Use `git pull origin main --allow-unrelated-histories` |
-| `There is no tracking information for the current branch` | Run `git branch --set-upstream-to=origin/main main` |
-| Accidentally committed `.env` | Remove with `git rm --cached .env` and add it to `.gitignore` |
+| Issue                                                       | Fix                                                               |
+| ----------------------------------------------------------- | ----------------------------------------------------------------- |
+| `fatal: refusing to merge unrelated histories`            | Use `git pull origin main --allow-unrelated-histories`          |
+| `There is no tracking information for the current branch` | Run `git branch --set-upstream-to=origin/main main`             |
+| Accidentally committed `.env`                             | Remove with `git rm --cached .env` and add it to `.gitignore` |
 
 ---
 
@@ -176,16 +176,16 @@ git show --name-only
 
 ### 🔍 Quick Summary
 
-| Command | Purpose |
-|----------|----------|
-| `git init` | Initialize local repo |
-| `git add .` | Stage all files |
-| `git commit -m "message"` | Commit changes |
-| `git remote add origin <url>` | Link to GitHub repo |
+| Command                                              | Purpose                      |
+| ---------------------------------------------------- | ---------------------------- |
+| `git init`                                         | Initialize local repo        |
+| `git add .`                                        | Stage all files              |
+| `git commit -m "message"`                          | Commit changes               |
+| `git remote add origin <url>`                      | Link to GitHub repo          |
 | `git pull origin main --allow-unrelated-histories` | Merge if remote isn’t empty |
-| `git push -u origin main` | Push and set tracking |
-| `git status` | Check current state |
-| `git log` | View commit history |
+| `git push -u origin main`                          | Push and set tracking        |
+| `git status`                                       | Check current state          |
+| `git log`                                          | View commit history          |
 
 ---
 
@@ -193,13 +193,14 @@ git show --name-only
 
 ## 🧱 Prisma Schema Updates
 
-Whenever you make changes to your Prisma schema file (`prisma/schema.prisma`),  
+Whenever you make changes to your Prisma schema file (`prisma/schema.prisma`),
 you need to regenerate the Prisma Client so your code reflects the latest database structure.
 
 Run the following command:
 
 ```bash
-npx prisma generate
+npx prisma migrate dev (Created the migration and updated the database)
+npx prisma generate (Generated TypeScript types)
 ```
 
 ## Environment Variables
@@ -209,17 +210,18 @@ When a new environment variable is introduced, it must be added in **all relevan
 ### Required locations
 
 1. **Local development**
+
    - Add the variable to the local `.env` file.
    - Example:
      ```env
      MY_NEW_VAR=value
      ```
-
 2. **Vercel**
+
    - Add the same variable in **Vercel → Project Settings → Environment Variables**.
    - Ensure it is defined for the correct environments (Development, Preview, Production).
-
 3. **GitHub Actions (if applicable)**
+
    - If the variable is used in any GitHub Action workflow:
      - Add it to **GitHub → Repository → Settings → Secrets and variables**.
      - Use **Secrets** for sensitive values (tokens, keys).
@@ -230,6 +232,3 @@ When a new environment variable is introduced, it must be added in **all relevan
 - Variable names must match **exactly** across all platforms.
 - Missing variables may cause build failures, runtime errors, or broken CI pipelines.
 - After updating environment variables, redeploy the project if required.
-
-
-

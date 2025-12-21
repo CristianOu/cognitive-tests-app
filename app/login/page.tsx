@@ -6,10 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { getCookie } from 'cookies-next/client';
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from 'next/navigation';
+import { useAuth } from "../contexts/AuthContext";
 
 export default function LoginPage() {
   const [isMounted, setIsMounted] = useState(false); // Used to fix hydration error
   const router = useRouter();
+  const { login } = useAuth();
 
   const schema = z.object({
     email: z.string().email("Invalid email address"),
@@ -28,35 +30,15 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: FormValues) => {
-    try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
-        credentials: 'include', // Not critical here, but good for consistency
-      });
+    const result = await login(data.email, data.password);
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        // Handle error response
-        toast.error(result.error || 'Login failed. Please check your credentials.');
-        return;
-      }
-
-      // Success - redirect to dashboard
-      router.push('/dashboard');
-      router.refresh(); // Refresh to update server components (Header)
-      
-    } catch (error) {
-      console.error('Login error:', error);
-      toast.error('An unexpected error occurred. Please try again.');
+    if (!result.success) {
+      toast.error(result.error || 'Login failed. Please check your credentials.');
+      return;
     }
+
+    // Success - redirect to dashboard
+    router.push('/dashboard');
   };
 
   useEffect(() => {

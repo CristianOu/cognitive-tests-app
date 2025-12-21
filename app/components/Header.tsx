@@ -1,11 +1,12 @@
-import Link from "next/link";
-import { cookies } from "next/headers"; // Server-side only - cannot be used in client components
-import SignOutButton from "./SignOutButton";
+"use client";
 
-export default async function Header() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("auth_token")?.value;
-  const isAuthenticated = Boolean(token);
+import Link from "next/link";
+import SignOutButton from "./SignOutButton";
+import { useAuth } from "../contexts/AuthContext";
+
+export default function Header() {
+  const { isAuthenticated, user } = useAuth();
+  
 
   return (
     <header className="bg-white border-b border-gray-200 shadow-sm">
@@ -33,6 +34,11 @@ export default async function Header() {
         <div className="flex items-center gap-3">
           {isAuthenticated ? (
             <>
+              {user && user.name && (
+                <span className="text-gray-700 font-medium">
+                  {user.name}
+                </span>
+              )}
               <Link
                 href="/dashboard"
                 className="bg-gray-900 text-white px-5 py-2 rounded-md font-medium hover:bg-gray-800"
