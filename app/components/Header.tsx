@@ -5,7 +5,7 @@ import SignOutButton from "./SignOutButton";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Header() {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, isLoading } = useAuth();
   
 
   return (
@@ -32,37 +32,42 @@ export default function Header() {
 
         {/* Auth Buttons */}
         <div className="flex items-center gap-3">
-          {isAuthenticated ? (
-            <>
-              {user && user.name && (
-                <span className="text-gray-700 font-medium">
-                  {user.name}
-                </span>
-              )}
-              <Link
-                href="/dashboard"
-                className="bg-gray-900 text-white px-5 py-2 rounded-md font-medium hover:bg-gray-800"
-              >
-                Dashboard
-              </Link>
-              <SignOutButton />
-            </>
-          ) : (
-            <>
-              <Link
-                href="/register"
-                className="bg-blue-600 text-white px-5 py-2 rounded-md font-medium hover:bg-blue-700"
-              >
-                Sign Up
-              </Link>
-              <Link
-                href="/login"
-                className="bg-white text-gray-900 px-5 py-2 rounded-md font-medium border border-gray-300 hover:bg-gray-50"
-              >
-                Log In
-              </Link>
-            </>
-          )}
+          { isLoading ? (
+              <span className="text-gray-500">Loading...</span>
+            ) : (
+            isAuthenticated ? (
+              <>
+                {user && user.name && (
+                  <span className="text-gray-700 font-medium">
+                    {user.name}
+                  </span>
+                )}
+                <Link
+                  href="/dashboard"
+                  className="bg-gray-900 text-white px-5 py-2 rounded-md font-medium hover:bg-gray-800"
+                >
+                  Dashboard
+                </Link>
+                <SignOutButton />
+              </>
+              ) : (
+                <>
+                  <Link
+                    href="/register"
+                    className="bg-blue-600 text-white px-5 py-2 rounded-md font-medium hover:bg-blue-700"
+                  >
+                    Sign Up
+                  </Link>
+                  <Link
+                    href="/login"
+                    className="bg-white text-gray-900 px-5 py-2 rounded-md font-medium border border-gray-300 hover:bg-gray-50"
+                  >
+                    Log In
+                  </Link>
+                </>
+              )
+            )
+          }
         </div>
       </nav>
     </header>
