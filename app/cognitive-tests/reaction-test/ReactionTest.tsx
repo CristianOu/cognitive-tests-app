@@ -149,6 +149,11 @@ export default function ReactionTest() {
                   </label>
                 </div>
               )}
+              { !isAuthenticated && (
+                <div className="text-sm text-[#4c669a]">
+                  <em>Log in to save your results to analytics.</em>
+                </div>
+              )}
             </div>
           )}
 
