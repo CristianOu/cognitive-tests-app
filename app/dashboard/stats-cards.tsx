@@ -1,6 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Target, Trophy, Activity } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { TrendingUp, Target, Trophy, Activity, Info } from "lucide-react";
 
 interface StatsCardsProps {
   avgReactionTime: number | null;
@@ -18,75 +23,89 @@ export function StatsCards({
   testsThisWeek,
 }: StatsCardsProps) {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {/* Avg Reaction Time */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Avg Reaction Time</CardTitle>
-          <Activity className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        { avgReactionTime && (
+    <TooltipProvider>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {/* Avg Reaction Time */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Card className="cursor-default">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Avg Reaction Time
+                  <Info className="inline ml-1 h-3 w-3 text-muted-foreground" />
+                </CardTitle>
+                <Activity className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              {avgReactionTime && (
+                <CardContent>
+                  <div className="text-2xl font-bold">{avgReactionTime}ms</div>
+                </CardContent>
+              )}
+            </Card>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Based on data from the last 30 days</p>
+          </TooltipContent>
+        </Tooltip>
+
+        {/* Accuracy Rate */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Card className="cursor-default">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Accuracy Rate
+                  <Info className="inline ml-1 h-3 w-3 text-muted-foreground" />
+                </CardTitle>
+                <Target className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{accuracyRate}%</div>
+              </CardContent>
+            </Card>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Calculated across all tries</p>
+          </TooltipContent>
+        </Tooltip>
+
+        {/* Percentile Rank */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Card className="cursor-default">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Percentile Rank
+                  <Info className="inline ml-1 h-3 w-3 text-muted-foreground" />
+                </CardTitle>
+                <Trophy className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              {percentileRank !== null && percentileRank > 0 ? (
+                <CardContent>
+                  <div className="text-2xl font-bold">Top {percentileRank}%</div>
+                </CardContent>
+              ) : null}
+            </Card>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Based on active users in the last 30 days</p>
+          </TooltipContent>
+        </Tooltip>
+
+        {/* Total Tests */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Tests</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{avgReactionTime}ms</div>
-            {/* <p className="text-xs text-muted-foreground">
-              <Badge variant="secondary" className="text-xs bg-green-100 text-green-800 hover:bg-green-100">
-                -10ms
-              </Badge>
-            </p> */}
+            <div className="text-2xl font-bold">{totalTests}</div>
+            <p className="text-xs text-muted-foreground">
+              {testsThisWeek} this week
+            </p>
           </CardContent>
-        )}
-        
-      </Card>
-
-      {/* Accuracy Rate */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Accuracy Rate</CardTitle>
-          <Target className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{accuracyRate}%</div>
-          {/* <p className="text-xs text-muted-foreground">
-            <Badge variant="secondary" className="text-xs bg-green-100 text-green-800 hover:bg-green-100">
-              +0.3%
-            </Badge>
-          </p> */}
-        </CardContent>
-      </Card>
-
-      {/* Percentile Rank */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Percentile Rank</CardTitle>
-          <Trophy className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        {
-          percentileRank !== null && percentileRank > 0 ? (
-            <CardContent>
-              <div className="text-2xl font-bold">Top {percentileRank}%</div>
-              {/* <p className="text-xs text-muted-foreground">
-                <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800 hover:bg-blue-100">
-                  +5%
-                </Badge>
-              </p> */}
-            </CardContent>
-          ) : null
-        }
-      </Card>
-
-      {/* Total Tests */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Tests</CardTitle>
-          <TrendingUp className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{totalTests}</div>
-          <p className="text-xs text-muted-foreground">
-            {testsThisWeek} this week
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+        </Card>
+      </div>
+    </TooltipProvider>
   );
 }
