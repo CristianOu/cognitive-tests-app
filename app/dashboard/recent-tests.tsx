@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
+
 
 interface RecentTest {
   id: string;
@@ -26,9 +26,9 @@ export function RecentTests({ tests }: RecentTestsProps) {
           <CardTitle>Recent Tests</CardTitle>
           <CardDescription>Your latest test results</CardDescription>
         </div>
-        <Button variant="ghost" size="sm" className="text-primary">
+        {/* <Button variant="ghost" size="sm" className="text-primary">
           View All History
-        </Button>
+        </Button> */}
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
@@ -50,7 +50,7 @@ export function RecentTests({ tests }: RecentTestsProps) {
           {displayTests.map((test) => (
             <div
               key={test.id}
-              className="grid grid-cols-5 gap-4 py-3 items-center text-sm border-b last:border-0 hover:bg-muted/50 transition-colors cursor-pointer group"
+              className="grid grid-cols-5 gap-4 py-3 items-center text-sm border-b last:border-0"
             >
               <div className="text-muted-foreground">{test.dateTime}</div>
               <div className="font-medium">{test.testType}</div>
@@ -74,7 +74,6 @@ export function RecentTests({ tests }: RecentTestsProps) {
                 >
                   {test.status === "completed" ? "Completed" : "Failed"}
                 </Badge>
-                <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
             </div>
           ))}
