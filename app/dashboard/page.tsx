@@ -51,17 +51,6 @@ export default function DashboardPage() {
     }
   }, [user, isLoading]);
 
-    
-  // Mock data - replace with actual data from API
-  const statsData2 = {
-    avgReactionTime: 245,
-    accuracyRate: 98,
-    percentileRank: 15,
-    totalTests: 42,
-    testsThisWeek: 8,
-  };
-
-
   // Generate mock performance data for last 30 days
   const performanceData = Array.from({ length: 30 }, (_, i) => {
     const date = new Date();
