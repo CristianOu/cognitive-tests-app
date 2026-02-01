@@ -21,11 +21,17 @@ export async function GET() {
     // 2. Verify and decode the token to get userId
     let userId: string;
     try {
-      const decoded = jwt.verify(token, SECRET) as { id: string; name: string | null };
+      const decoded = jwt.verify(token, SECRET) as {
+        id: string;
+        name: string | null;
+      };
       userId = decoded.id;
     } catch (error) {
       console.error("JWT verification error:", error);
-      return NextResponse.json({ error: "Invalid or expired token" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Invalid or expired token" },
+        { status: 401 },
+      );
     }
 
     // 2. Calculate date ranges
@@ -64,7 +70,7 @@ export async function GET() {
     // 6. Calculate percentile rank (simplified - compare against all users' averages)
     // Get all users' average reaction times
     const allUsersAvgs = await prisma.reactionTestResult.groupBy({
-      by: ['userId'],
+      by: ["userId"],
       _avg: {
         reactionTime: true,
       },
@@ -74,13 +80,15 @@ export async function GET() {
     });
 
     const userAvg = last30DaysStats._avg.reactionTime || 0;
-    
+
     const betterThan = allUsersAvgs.filter(
-      (u) => (u._avg.reactionTime || Infinity) > userAvg
+      (u) => (u._avg.reactionTime || Infinity) > userAvg,
     ).length;
-    const percentileRank = allUsersAvgs.length > 0 && userAvg > 0
-      ? Math.round((betterThan / allUsersAvgs.length) * 100)
-      : 0;
+
+    const percentileRank =
+      allUsersAvgs.length > 0 && userAvg > 0
+        ? 100 - Math.round((betterThan / allUsersAvgs.length) * 100) || 100
+        : 0;
 
     // 7. Calculate improvement (compare last 7 days vs previous 7 days)
     const twoWeeksAgo = new Date();
@@ -104,7 +112,9 @@ export async function GET() {
 
     const improvement =
       lastWeekAvg._avg.reactionTime && previousWeekAvg._avg.reactionTime
-        ? Math.round(previousWeekAvg._avg.reactionTime - lastWeekAvg._avg.reactionTime)
+        ? Math.round(
+            previousWeekAvg._avg.reactionTime - lastWeekAvg._avg.reactionTime,
+          )
         : null;
 
     // 8. Calculate accuracy rate
@@ -114,9 +124,8 @@ export async function GET() {
     });
     const earlyPressCount = user?.earlyPressCount ?? 0;
     const totalAttempts = totalTests + earlyPressCount;
-    const accuracyRate = totalAttempts > 0
-      ? Math.round((totalTests / totalAttempts) * 100)
-      : 100;
+    const accuracyRate =
+      totalAttempts > 0 ? Math.round((totalTests / totalAttempts) * 100) : 100;
 
     // 9. Return stats
     return NextResponse.json({
@@ -134,7 +143,7 @@ export async function GET() {
     console.error("Dashboard stats error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
