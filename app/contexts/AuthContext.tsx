@@ -30,12 +30,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);
+        return userData;
       } else {
         setUser(null);
+        return null;
       }
     } catch (error) {
       console.error("Failed to check auth:", error);
       setUser(null);
+      return null;
     } finally {
       setIsLoading(false);
     }

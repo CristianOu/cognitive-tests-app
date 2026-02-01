@@ -22,7 +22,9 @@ model User {
   role         Role     @default(USER)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  earlyPressCount Int      @default(0)
   reactionTestResults ReactionTestResult[]  // makes user.reactionTestResults available, but not strictly necessary
+  testSessions TestSession[]
 }
 
 model ReactionTestResult {
@@ -40,4 +42,21 @@ model ReactionTestResult {
 enum Role {
   USER
   ADMIN
+}
+
+enum TestType {
+  REACTION
+}
+
+model TestSession {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  testType    TestType
+  resultValue Int      // primary metric (e.g., reaction time in ms)
+  status      String   @default("completed")
+  createdAt   DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([userId, testType, createdAt])
 }

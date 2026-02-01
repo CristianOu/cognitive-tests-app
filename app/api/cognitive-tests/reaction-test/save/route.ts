@@ -73,12 +73,22 @@ export async function POST(req: Request) {
     }
 
     // 5. Save to database - userId comes from JWT (secure!)
-    const result = await prisma.reactionTestResult.create({
-      data: {
-        userId,
-        reactionTime,
-      },
-    });
+    const [result] = await prisma.$transaction([
+      prisma.reactionTestResult.create({
+        data: {
+          userId,
+          reactionTime,
+        },
+      }),
+      prisma.testSession.create({
+        data: {
+          userId,
+          testType: "REACTION",
+          resultValue: reactionTime,
+          status: "completed",
+        },
+      }),
+    ]);
 
     // 6. Return success
     return NextResponse.json(
