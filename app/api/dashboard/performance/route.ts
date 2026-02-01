@@ -42,6 +42,7 @@ export async function GET() {
 
     const performanceData = results.map((r) => ({
       date: `${r.createdAt.getMonth() + 1}/${r.createdAt.getDate()}`,
+      time: `${r.createdAt.getHours().toString().padStart(2, "0")}:${r.createdAt.getMinutes().toString().padStart(2, "0")}`,
       reactionTime: r.reactionTime,
     }));
 

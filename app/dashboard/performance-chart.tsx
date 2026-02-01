@@ -5,6 +5,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 interface PerformanceData {
   date: string;
+  time?: string;
   reactionTime: number;
 }
 
@@ -13,6 +14,19 @@ interface PerformanceChartProps {
 }
 
 export function PerformanceChart({ data }: PerformanceChartProps) {
+  // Add a unique label per point: show date on X-axis, deduplicate with index
+  const chartData = data.map((d, i) => ({ ...d, index: i }));
+
+  // Build deduplicated tick labels: only show the date on the first occurrence of each date
+  const shownDates = new Set<string>();
+  const tickFormatter = (_: number, index: number) => {
+    const point = chartData[index];
+    if (!point) return "";
+    if (shownDates.has(point.date)) return "";
+    shownDates.add(point.date);
+    return point.date;
+  };
+
   return (
     <Card className="col-span-1 lg:col-span-2">
       <CardHeader>
@@ -21,14 +35,15 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
       </CardHeader>
       <CardContent className="pt-2">
         <ResponsiveContainer width="100%" height={350}>
-          <LineChart data={data}>
+          <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
             <XAxis
-              dataKey="date"
+              dataKey="index"
               stroke="#888888"
               fontSize={12}
               tickLine={false}
               axisLine={false}
+              tickFormatter={tickFormatter}
             />
             <YAxis
               stroke="#888888"
@@ -40,6 +55,7 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
             <Tooltip
               content={({ active, payload }) => {
                 if (active && payload && payload.length) {
+                  const point = payload[0].payload as PerformanceData;
                   return (
                     <div className="rounded-lg border bg-background p-2 shadow-sm">
                       <div className="grid grid-cols-2 gap-2">
@@ -48,12 +64,12 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
                             Date
                           </span>
                           <span className="font-bold text-muted-foreground">
-                            {payload[0].payload.date}
+                            {point.date}{point.time ? ` ${point.time}` : ""}
                           </span>
                         </div>
                         <div className="flex flex-col">
                           <span className="text-[0.70rem] uppercase text-muted-foreground">
-                            Time
+                            Reaction
                           </span>
                           <span className="font-bold">
                             {payload[0].value}ms

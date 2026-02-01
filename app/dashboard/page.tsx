@@ -20,6 +20,7 @@ interface DashboardStats {
 
 interface PerformanceDataPoint {
   date: string;
+  time?: string;
   reactionTime: number;
 }
 
