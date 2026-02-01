@@ -107,12 +107,23 @@ export async function GET() {
         ? Math.round(previousWeekAvg._avg.reactionTime - lastWeekAvg._avg.reactionTime)
         : null;
 
-    // 8. Return stats
+    // 8. Calculate accuracy rate
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { earlyPressCount: true },
+    });
+    const earlyPressCount = user?.earlyPressCount ?? 0;
+    const totalAttempts = totalTests + earlyPressCount;
+    const accuracyRate = totalAttempts > 0
+      ? Math.round((totalTests / totalAttempts) * 100)
+      : 100;
+
+    // 9. Return stats
     return NextResponse.json({
       avgReactionTime: last30DaysStats._avg.reactionTime
         ? Math.round(last30DaysStats._avg.reactionTime)
         : null,
-      accuracyRate: 98, // TODO: Implement accuracy tracking
+      accuracyRate,
       percentileRank,
       totalTests,
       testsThisWeek,

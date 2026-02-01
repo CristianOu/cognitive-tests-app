@@ -203,6 +203,12 @@ npx prisma migrate dev (Created the migration and updated the database)
 npx prisma generate (Generated TypeScript types)
 ```
 
+> **Note:** On Windows, `npx prisma generate` may fail with an `EPERM` error if the Prisma query engine DLL is locked by a running process. If this happens:
+>
+> 1. Stop the dev server.
+> 2. Restart your editor (e.g. VSCode) — its TypeScript server holds a lock on the DLL.
+> 3. Run `npx prisma generate` again before starting the dev server.
+
 ## Environment Variables
 
 When a new environment variable is introduced, it must be added in **all relevant places** to keep local development, deployments, and automation consistent.

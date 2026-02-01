@@ -63,6 +63,17 @@ export default function ReactionTest() {
     }
   };
 
+  const saveEarlyPressToDatabase = async () => {
+    try {
+      await fetch("/api/cognitive-tests/reaction-test/early-press", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error("Error saving early press:", error);
+    }
+  };
+
   const handleAction = (event?: React.MouseEvent | React.KeyboardEvent) => {
     if (event && "code" in event && event.code !== "Space") return; // only trigger on space
     if (phase === TestPhase.WAITING) {
@@ -71,6 +82,10 @@ export default function ReactionTest() {
       setPhase(TestPhase.RESULT);
       setMessage("Too early! You pressed before it turned green.");
       setBgColor("bg-red-300");
+
+      if (analyticsEnabled && isAuthenticated) {
+        saveEarlyPressToDatabase();
+      }
     } else if (phase === TestPhase.READY && startTime) {
       const time = Date.now() - startTime;
       setAttempts((prev) => [...prev, time]);

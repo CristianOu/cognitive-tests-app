@@ -22,6 +22,7 @@ model User {
   role         Role     @default(USER)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  earlyPressCount Int      @default(0)
   reactionTestResults ReactionTestResult[]  // makes user.reactionTestResults available, but not strictly necessary
 }
 
