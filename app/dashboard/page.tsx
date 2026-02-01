@@ -18,28 +18,43 @@ interface DashboardStats {
   testsLast30Days: number;
 }
 
+interface PerformanceDataPoint {
+  date: string;
+  reactionTime: number;
+}
+
 export default function DashboardPage() {
   const { user, isLoading } = useAuth();
   const [statsData, setStatsData] = useState<DashboardStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
   const [statsError, setStatsError] = useState<string | null>(null);
+  const [performanceData, setPerformanceData] = useState<PerformanceDataPoint[]>([]);
 
-  // Fetch dashboard stats
+  // Fetch dashboard stats and performance data
   useEffect(() => {
-    async function fetchStats() {
+    async function fetchDashboardData() {
       try {
         setStatsLoading(true);
-        const response = await fetch("/api/dashboard/stats");
+        const [statsResponse, perfResponse] = await Promise.all([
+          fetch("/api/dashboard/stats"),
+          fetch("/api/dashboard/performance"),
+        ]);
 
-        if (!response.ok) {
+        if (!statsResponse.ok) {
           throw new Error("Failed to fetch stats");
         }
 
-        const data = await response.json();
-        setStatsData(data);
+        const stats = await statsResponse.json();
+        setStatsData(stats);
+
+        if (perfResponse.ok) {
+          const perfData = await perfResponse.json();
+          setPerformanceData(perfData);
+        }
+
         setStatsError(null);
       } catch (error) {
-        console.error("Error fetching stats:", error);
+        console.error("Error fetching dashboard data:", error);
         setStatsError("Failed to load stats");
       } finally {
         setStatsLoading(false);
@@ -47,19 +62,9 @@ export default function DashboardPage() {
     }
 
     if (user && !isLoading) {
-      fetchStats();
+      fetchDashboardData();
     }
   }, [user, isLoading]);
-
-  // Generate mock performance data for last 30 days
-  const performanceData = Array.from({ length: 30 }, (_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() - (29 - i));
-    return {
-      date: `${date.getMonth() + 1}/${date.getDate()}`,
-      reactionTime: Math.floor(220 + Math.random() * 60),
-    };
-  });
 
   // Show loading state
   if (isLoading || statsLoading) {
