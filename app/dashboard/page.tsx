@@ -24,21 +24,32 @@ interface PerformanceDataPoint {
   reactionTime: number;
 }
 
+interface RecentTest {
+  id: string;
+  dateTime: string;
+  testType: string;
+  resultValue: number;
+  accuracy: number;
+  status: "completed" | "failed";
+}
+
 export default function DashboardPage() {
   const { user, isLoading } = useAuth();
   const [statsData, setStatsData] = useState<DashboardStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
   const [statsError, setStatsError] = useState<string | null>(null);
   const [performanceData, setPerformanceData] = useState<PerformanceDataPoint[]>([]);
+  const [recentTests, setRecentTests] = useState<RecentTest[]>([]);
 
   // Fetch dashboard stats and performance data
   useEffect(() => {
     async function fetchDashboardData() {
       try {
         setStatsLoading(true);
-        const [statsResponse, perfResponse] = await Promise.all([
+        const [statsResponse, perfResponse, recentResponse] = await Promise.all([
           fetch("/api/dashboard/stats"),
           fetch("/api/dashboard/performance"),
+          fetch("/api/dashboard/recent-tests"),
         ]);
 
         if (!statsResponse.ok) {
@@ -51,6 +62,11 @@ export default function DashboardPage() {
         if (perfResponse.ok) {
           const perfData = await perfResponse.json();
           setPerformanceData(perfData);
+        }
+
+        if (recentResponse.ok) {
+          const recentData = await recentResponse.json();
+          setRecentTests(recentData);
         }
 
         setStatsError(null);
@@ -155,7 +171,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Tests Table */}
-      <RecentTests tests={[]} />
+      <RecentTests tests={recentTests} />
     </div>
   );
 }

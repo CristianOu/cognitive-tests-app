@@ -7,7 +7,7 @@ interface RecentTest {
   id: string;
   dateTime: string;
   testType: string;
-  reactionTime: number;
+  resultValue: number;
   accuracy: number;
   status: "completed" | "failed";
 }
@@ -17,34 +17,7 @@ interface RecentTestsProps {
 }
 
 export function RecentTests({ tests }: RecentTestsProps) {
-  const defaultTests: RecentTest[] = [
-    {
-      id: "1",
-      dateTime: "Today, 10:32 AM",
-      testType: "Visual Reflex",
-      reactionTime: 238,
-      accuracy: 100,
-      status: "completed",
-    },
-    {
-      id: "2",
-      dateTime: "Yesterday, 4:15 PM",
-      testType: "Choice Reaction",
-      reactionTime: 256,
-      accuracy: 95,
-      status: "completed",
-    },
-    {
-      id: "3",
-      dateTime: "Jan 22, 09:00 AM",
-      testType: "Visual Reflex",
-      reactionTime: 245,
-      accuracy: 92,
-      status: "completed",
-    },
-  ];
-
-  const displayTests = tests.length > 0 ? tests.slice(0, 5) : defaultTests;
+  const displayTests = tests.slice(0, 5);
 
   return (
     <Card>
@@ -63,12 +36,17 @@ export function RecentTests({ tests }: RecentTestsProps) {
           <div className="grid grid-cols-5 gap-4 pb-2 text-xs font-medium text-muted-foreground border-b">
             <div>DATE & TIME</div>
             <div>TEST TYPE</div>
-            <div>REACTION TIME</div>
+            <div>RESULT</div>
             <div>ACCURACY</div>
             <div>STATUS</div>
           </div>
 
           {/* Table Rows */}
+          {displayTests.length === 0 && (
+            <div className="py-8 text-center text-sm text-muted-foreground">
+              No tests completed yet. Start a test to see your results here.
+            </div>
+          )}
           {displayTests.map((test) => (
             <div
               key={test.id}
@@ -76,11 +54,11 @@ export function RecentTests({ tests }: RecentTestsProps) {
             >
               <div className="text-muted-foreground">{test.dateTime}</div>
               <div className="font-medium">{test.testType}</div>
-              <div className="font-mono">{test.reactionTime}ms</div>
+              <div className="font-mono">{test.resultValue}ms</div>
               <div className={`font-semibold ${
                 test.accuracy === 100
                   ? "text-green-600"
-                  : test.accuracy >= 95
+                  : test.accuracy >= 90
                   ? "text-blue-600"
                   : "text-yellow-600"
               }`}>
